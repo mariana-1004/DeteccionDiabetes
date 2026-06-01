@@ -9,7 +9,7 @@
 - **Instancias:** 70,692
 - **Features:** 21
 - **Target:** `Diabetes_binary` — 0 = No diabetes, 1 = Sí diabetes
-- **Balance:** 50% / 50% ✅
+- **Balance:** 50% / 50% 
 
 ### Descripción de las columnas
 
@@ -34,7 +34,7 @@
 | `PhysHlth` | Días de mala salud física en el último mes  | Numérico |
 | `DiffWalk` | Tiene dificultad para caminar o subir escaleras | Categórico |
 | `Sex` | Sexo (0 = mujer, 1 = hombre) | Categórico |
-| `Age` | Rango de edad en 13 categorías | Numérico (ordinal) |
+| `Age` | Rango de edad en 13 categorías | Numérico |
 | `Education` | Nivel educativo (escala 1 a 6) | Numérico  |
 | `Income` | Nivel de ingresos  | Numérico  |
 
@@ -43,11 +43,11 @@
 
 [2] Centers for Disease Control and Prevention, "Behavioral Risk Factor Surveillance System Survey Data," U.S. Department of Health and Human Services, Atlanta, GA, 2015.
 
-
-
-
-
 ---
+## 🔬 Modelo
+ 
+Preprocesamiento del dataset:
+ 
 
 
 
