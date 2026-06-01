@@ -15,7 +15,7 @@
 
 | Columna | Descripción | Tipo de dato |
 |---|---|---|
-| `Diabetes_binary` | **(Target)** Si la persona tiene diabetes (1) o no (0) | Categórico |
+| `Diabetes_binary` | Si la persona tiene diabetes (1) o no (0) **(Target)**| Categórico |
 | `HighBP` | Tiene presión arterial alta (1) o no (0) | Categórico |
 | `HighChol` | Tiene colesterol alto (1) o no (0) | Categórico |
 | `CholCheck` | Se ha revisado el colesterol en los últimos 5 años | Categórico |
@@ -37,11 +37,6 @@
 | `Age` | Rango de edad en 13 categorías | Numérico |
 | `Education` | Nivel educativo (escala 1 a 6) | Numérico  |
 | `Income` | Nivel de ingresos  | Numérico  |
-
-
-[1] A. Teboul, "Diabetes Health Indicators Dataset," Kaggle, 2021. [Online]. Available: https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/data
-
-[2] Centers for Disease Control and Prevention, "Behavioral Risk Factor Surveillance System Survey Data," U.S. Department of Health and Human Services, Atlanta, GA, 2015.
 
 ---
 ## 🔬 Implementación
@@ -86,14 +81,14 @@ X = df_iris[['HighBP', 'HighChol', 'CholCheck', 'BMI', 'Smoker', 'Stroke',
 y_raw = df_iris['Diabetes_binary']
 ```
 
-2. **División train/test.** Se eligió una división de 80% para Train y 20% para Test (Considerando en un futuro implementar un 10% de validación) por ser una de las proporciones más usadas en machine learning. Como el dataset es grande (70,692 instancias), ese 20% sigue siendo una muestra amplia para evaluar el modelo.
+2. **División train/test.** Se eligió una división de 80% para Train y 20% para Test (Considerando en un futuro implementar un 10% para validación) por ser una de las proporciones más usadas en machine learning.
 ```python
 X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42, stratify=y_encoded)
 ```
 
 ## Modelo
 
-Se construyó una red neuronal con la API de Keras, compuesta por una capa de entrada para las 21 features, una capa oculta de 256 neuronas con función de activación Relu y una capa de salida con una función de activación sigmoid, debido a que nuestro reto se centra en clasificación. Para la evaluación del modelo se emplearon tres métricas (Accuracy, Precision y Recall) fueron seleccionadas debido a que se calculan en el artículo de referencia, con el fin de contar con un punto de comparación para los resultados obtenidos.
+Se construyó una red neuronal con la API de Keras, compuesta por una capa de entrada para las 21 features, una capa oculta de 256 neuronas con función de activación Relu y una capa de salida con una función de activación sigmoid, debido a que nuestro reto se centra en clasificación. Para la evaluación del modelo se emplearon tres métricas (Accuracy, Precision y Recall) fueron seleccionadas debido a que se calculan en el artículo de referencia, esto con el fin de contar con un punto de comparación para los resultados obtenidos.
 
 ```python
 from tensorflow.keras import optimizers
@@ -132,24 +127,34 @@ El modelo alcanzó un accuracy aproximado del 75%. Las curvas de entrenamiento y
 
 #### Matriz de confusión
 
+La matriz de confusión evidencia que el modelo clasifica correctamente la mayoría de los casos, manteniendo un equilibrio entre la detección de personas con diabetes y aquellas que no la presentan.
+De las personas sin diabetes, el modelo identificó correctamente 5,045 casos, mientras que clasificó erróneamente 2,025 como diabéticas. Por otro lado, de las personas con diabetes, acertó en 5,545 casos y 1,524 los clasificó incorrectamente como sanas. En conjunto, el modelo clasifica correctamente gran parte de los casos (10,590 de 14,139)
+
 ![Matriz de confusión](imagenes/Matrix.png)
  
-La matriz de confusión evidencia que el modelo clasifica correctamente la mayoría de los casos, manteniendo un adecuado equilibrio entre la detección de personas con diabetes y aquellas que no la presentan.
 
 
  ---
 ## 📁 Estructura del repositorio
  
 ```
+├── Codigo/
+│   └── Codigo.ipynb
 ├── Dataset/
 │   └── diabetes_binary_5050split_health_indicators_BRFSS2015.csv
 ├── Paper/
 │   └── Original
-│        └── BRFSS2015_paper.pdf
-├── Codigo/
-│   └── preprocesamiento.ipynb
+│       └── BRFSS2015_paper.pdf
+├── Imagenes/
 └── README.md
 ```
- 
+---
+ ## 📖 Referencias
+
+[1] A. Teboul, "Diabetes Health Indicators Dataset," Kaggle, 2021. [Online]. Available: https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/data
+
+[2] Centers for Disease Control and Prevention, "Behavioral Risk Factor Surveillance System Survey Data," U.S. Department of Health and Human Services, Atlanta, GA, 2015.
+
+[3] M. Afandi, D. D. Riskianto, M. R. Ramadhan, and Sudriyanto, "Artificial Neural Network-Based Diabetes Prediction Analysis Using CDC Diabetes Health Indicators Data," Jurnal Riset Sistem dan Teknologi Informasi (RESTIA), vol. 4, no. 1, pp. 22–29, Feb. 2026.
 
 
