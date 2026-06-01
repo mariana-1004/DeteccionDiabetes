@@ -44,16 +44,100 @@
 [2] Centers for Disease Control and Prevention, "Behavioral Risk Factor Surveillance System Survey Data," U.S. Department of Health and Human Services, Atlanta, GA, 2015.
 
 ---
-## 🔬 Modelo
+## 🔬 Implementación
+
+### Análisis Exploratorio (EDA)
  
-Preprocesamiento del dataset:
+Como primer paso se verificó el balance de clases del conjunto de datos. La distribución resultó ser equitativa, con un 50% de casos en cada categoría,  como se observa en la imagen.
+
+```python
+import matplotlib.pyplot as plt
+
+conteo = df_iris['Diabetes_binary'].value_counts()
+
+
+plt.figure(figsize=(6, 4))
+plt.bar(['No Diabetes (0)', 'Diabetes (1)'], conteo.values, color=['blue', 'green'])
+plt.title('Distribución Dataset')
+plt.xlabel('Clase')
+plt.ylabel('Número de instancias')
+plt.tight_layout()
+
+for i, valor in enumerate(conteo.values):
+    plt.text(i, valor + 200, str(valor), ha='center', fontweight='bold')
+
+plt.show()
+```
+ 
+![Distribución del dataset](imagenes/distribucion.png)
  
 
 
+### Preprocesamiento
+
+Una vez verificado el balance, los datos fueron preprocesados:
+
+1. **Separación de features y target.** Se separaron las 21 columnas con valores para predecir (X) de la columna objetivo `Diabetes_binary` (y).
+```python
+X = df_iris[['HighBP', 'HighChol', 'CholCheck', 'BMI', 'Smoker', 'Stroke',
+             'HeartDiseaseorAttack', 'PhysActivity', 'Fruits', 'Veggies',
+             'HvyAlcoholConsump', 'AnyHealthcare', 'NoDocbcCost', 'GenHlth',
+             'MentHlth', 'PhysHlth', 'DiffWalk', 'Sex', 'Age', 'Education', 'Income']]
+y_raw = df_iris['Diabetes_binary']
+```
+
+2. **División train/test.** Se eligió una división de 80% para Train y 20% para Test (Considerando en un futuro implementar un 10% de validación) por ser una de las proporciones más usadas en machine learning. Como el dataset es grande (70,692 instancias), ese 20% sigue siendo una muestra amplia para evaluar el modelo.
+```python
+X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42, stratify=y_encoded)
+```
+
+## Modelo
+
+Se construyó una red neuronal con la API de Keras, compuesta por una capa de entrada para las 21 features, una capa oculta de 256 neuronas con función de activación Relu y una capa de salida con una función de activación sigmoid, debido a que nuestro reto se centra en clasificación. Para la evaluación del modelo se emplearon tres métricas (Accuracy, Precision y Recall) fueron seleccionadas debido a que se calculan en el artículo de referencia, con el fin de contar con un punto de comparación para los resultados obtenidos.
+
+```python
+from tensorflow.keras import optimizers
+from tensorflow.keras import models
+from tensorflow.keras import layers
+
+model = models.Sequential()
+#Entrance X
+model.add(layers.Input(shape=(21,)))
+model.add(layers.Dense(256,activation='relu'))
+#model.add(layers.Dense(128,activation='relu'))
+
+#Sigmoid as activation function for classification
+model.add(layers.Dense(1,activation='sigmoid'))
+
+model.summary()
+
+model.compile(loss='binary_crossentropy',
+						optimizer=optimizers.RMSprop(learning_rate=2e-5),
+						metrics=['acc','precision','recall'])
+```
+
+![Arquitectura del modelo](imagenes/result_redneuronal.png)
 
 
+### Resultados
 
+El modelo fue entrenado durante 10 épocas. Posteriormente se graficaron las métricas de accuracy y loss correspondientes tanto al conjunto de entrenamiento como al de validación.
+El modelo alcanzó un accuracy aproximado del 75%. Las curvas de entrenamiento y validación se mantienen muy próximas entre sí a lo largo de las épocas, lo que indica que no se presentó overfitting y underfitting.
+
+![Métricas](imagenes/values.png)
+
+![Accuracy](imagenes/accgraph.png)
  
+![Loss](imagenes/lossgraph.png)
+
+#### Matriz de confusión
+
+![Matriz de confusión](imagenes/Matrix.png)
+ 
+La matriz de confusión evidencia que el modelo clasifica correctamente la mayoría de los casos, manteniendo un adecuado equilibrio entre la detección de personas con diabetes y aquellas que no la presentan.
+
+
+ ---
 ## 📁 Estructura del repositorio
  
 ```
@@ -67,22 +151,5 @@ Preprocesamiento del dataset:
 └── README.md
 ```
  
----
- 
-## 📊 Dataset
- 
-**CDC Diabetes Health Indicators — BRFSS 2015**
- 
-- **Fuente:** Centers for Disease Control and Prevention (CDC)
-- **Instancias:** 70,692
-- **Target:** `Diabetes_binary` — 0 = No diabetes, 1 = Sí diabetes
-- **Balance:** 50% / 50% 
----
- 
-## 🔬 Primer Avance — Rama `Primer-Avance`
- 
-Preprocesamiento del dataset:
- 
-- Carga y exploración de datos
-- Separación de features (X) y target (y)
-- División train/test (80% / 20%)
+
+
