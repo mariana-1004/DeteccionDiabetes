@@ -140,6 +140,8 @@ De las personas sin diabetes, el modelo identificó correctamente 5,045 casos, m
 ```
 ├── Codigo/
 │   └── Codigo.ipynb
+|   └── Prueba/
+|       └── Prueba.ipynb
 ├── Dataset/
 │   └── diabetes_binary_5050split_health_indicators_BRFSS2015.csv
 ├── Paper/
