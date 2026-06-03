@@ -48,7 +48,7 @@ Como primer paso se verificó el balance de clases del conjunto de datos. La dis
 ```python
 import matplotlib.pyplot as plt
 
-conteo = df_iris['Diabetes_binary'].value_counts()
+conteo = df_diabetes['Diabetes_binary'].value_counts()
 
 
 plt.figure(figsize=(6, 4))
@@ -74,11 +74,11 @@ Una vez verificado el balance, los datos fueron preprocesados:
 
 1. **Separación de features y target.** Se separaron las 21 columnas con valores para predecir (X) de la columna objetivo `Diabetes_binary` (y).
 ```python
-X = df_iris[['HighBP', 'HighChol', 'CholCheck', 'BMI', 'Smoker', 'Stroke',
+X = df_diabetes[['HighBP', 'HighChol', 'CholCheck', 'BMI', 'Smoker', 'Stroke',
              'HeartDiseaseorAttack', 'PhysActivity', 'Fruits', 'Veggies',
              'HvyAlcoholConsump', 'AnyHealthcare', 'NoDocbcCost', 'GenHlth',
              'MentHlth', 'PhysHlth', 'DiffWalk', 'Sex', 'Age', 'Education', 'Income']]
-y_raw = df_iris['Diabetes_binary']
+y_raw = df_diabetes['Diabetes_binary']
 ```
 
 2. **División train/test.** Se eligió una división de 80% para Train y 20% para Test (Considerando en un futuro implementar un 10% para validación) por ser una de las proporciones más usadas en machine learning.
@@ -107,7 +107,7 @@ model.add(layers.Dense(1,activation='sigmoid'))
 model.summary()
 
 model.compile(loss='binary_crossentropy',
-						optimizer=optimizers.RMSprop(learning_rate=2e-5),
+						optimizer=optimizers.Adam(learning_rate=2e-5),
 						metrics=['acc','precision','recall'])
 ```
 
