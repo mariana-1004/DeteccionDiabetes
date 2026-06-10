@@ -324,7 +324,7 @@ Un aspecto clave que diferencia este proyecto de los artículos de referencia es
  
 | Modelo / Estudio | Dataset | Accuracy | Precisión | Recall |
 |---|---|---|---|---|
-| Ullah et al. [1] — KNN | BRFSS 2015 (desbalanceado + SMOTE-ENN) | 98.36% | 0.98 | 0.98 |
+| Ullah et al. [1] — KNN | BRFSS 2015 (desbalanceado + SMOTE-ENN) | 98.36% | 0.98% | 0.98% |
 | Afandi et al. [2] — ANN (MLP) | CDC Health Indicators (desbalanceado) | 86.45% | 85.20% | 82.70% |
 | **Mi proyecto -  Modelo Base** | **BRFSS 2015 (50/50 balanceado)** | **75.3%** | **73.4%** | **79.2%** |
 | **Mi proyecto — Modelo Refinado** | **BRFSS 2015 (50/50 balanceado)** | **76.4%** | **73.9%** | **81.8%** |
@@ -343,7 +343,7 @@ Un aspecto clave que diferencia este proyecto de los artículos de referencia es
 
 
 
-Del total de personas que sí tenían diabetes, el modelo las identificó correctamente el 81% de las veces. Del total de personas que **no tenían diabetes**, las clasificó correctamente el 68% de las veces. Esto significa que el modelo base era más hábil detectando diabéticos que descartando personas sanas.
+Del total de personas que sí tenían diabetes, el modelo las identificó correctamente el 81% de las veces. Del total de personas que no tenían diabetes, las clasificó correctamente el 68% de las veces. Esto significa que el modelo base era más hábil detectando diabéticos que descartando personas sanas.
  
 #### Modelo Refinado
  
@@ -385,7 +385,7 @@ La accuracy se estabiliza en torno al 74–76%:
 ###  Conclusiones
 
 Este proyecto tenía como objetivo predecir si una persona tiene diabetes o no, tomando como referecia el dataset "CDC Diabetes Health Indicators". Logrando clasificar correctamente alrededor del 75% de los casos.
-Sin embargo, una de las cosas que más me llamó la atención durante el desarrollo fue que sin importar cuánto se ajustaran los hiperparámetros, el accuracy no subía de ese rango. Se probaron distintas configuraciones tomadas directamente de los dos artículos de referencia, como cambiar el scaler de StandardScaler a RobustScaler, aumentar las capas ocultas de una a tres, agregar Batch Normalization y Dropout, subir el learning rate de 2e-5 a 1e-3, entrenar durante 50 épocas en lugar de 10 y ajustar la división del dataset a 70/30. Todos estos cambios mejoraron la estabilidad del entrenamiento y equilibraron mejor los errores entre las dos clases, pero la accuracy global se mantuvo prácticamente igual.
+Sin embargo, una de las cosas que más me llamó la atención durante el desarrollo fue que sin importar cuánto se ajustaran los hiperparámetros, el accuracy no subía de ese rango. Se probaron distintas configuraciones tomadas directamente de los dos artículos de referencia, como cambiar el scaler de StandardScaler a RobustScaler, aumentar las capas ocultas de una a tres, agregar Batch Normalization y Dropout, subir el learning rate de 2e-5 a 1e-3, entrenar durante 50 épocas en lugar de 10 y ajustar la división del dataset a 70/30. Todos estos cambios mejoraron la estabilidad del entrenamiento y equilibraron mejor los errores entre las dos clases, pero el accuracy global se mantuvo prácticamente igual.
 La conclusión a la que llegué es que el límite no está en el modelo sino en los datos. Los 21 features disponibles son indicadores de riesgo, es decir, que saber que alguien tiene presión alta, un IMC elevado o que no hace ejercicio aumenta la probabilidad de diabetes, pero no la determina. Hay personas con todos esos factores que no tienen diabetes y personas sin ninguno que sí la tienen. Esa superposición entre clases es algo que complica que la arquitectura de red neuronal puede predecir.
 Si pudiera repetir el proyecto, consideraría explorar features adicionales como antecedentes familiares, que sí tienen un poder predictivo más directo. También sería bueno probar arquitecturas más complejas o técnicas como SMOTE para generar datos, tal como hicieron en Ullah et al., aunque eso implicaría trabajar con el dataset desbalanceado y los resultados ya no serían directamente comparables.
 
