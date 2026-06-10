@@ -1,7 +1,7 @@
 # Predicción de Diabetes (Clasificación)
  
 ---
-## 📋 Abstract
+## Abstract
 This project applies deep learning to predict whether a person
 has diabetes based on 21 everyday health indicators, such as
 blood pressure, body mass index, physical activity and lifestyle
@@ -20,7 +20,7 @@ for clinical tests.
 
 ---
 
-## 📃 Introducción
+## Introducción
 
 La diabetes es una enfermedad que cada vez afecta a más personas 
 alrededor del mundo, y detectarla a tiempo puede marcar una gran 
@@ -42,7 +42,7 @@ de la red.
 
 ---
 
-## 📊 Dataset
+## Dataset
 
 **CDC Diabetes Health Indicators — BRFSS 2015**
 
@@ -80,7 +80,7 @@ de la red.
 | `Income` | Nivel de ingresos  | Numérico  |
 
 ---
-## 🔬 Implementación
+## Implementación
 
 ### Análisis Exploratorio (EDA)
  
@@ -308,7 +308,7 @@ history = model.fit(X_train_scaled, y_train,
  ---
 
  
-###  📊 Resultados
+###  Resultados
 
  
 Un aspecto clave que diferencia este proyecto de los artículos de referencia es la versión del dataset utilizada.
@@ -391,7 +391,7 @@ Si pudiera repetir el proyecto, consideraría explorar features adicionales como
 
 ---
 
- ## 📖 Referencias
+ ##  Referencias
 [1] Ullah, Z., Saleem, F., Jamjoom, M., Fakieh, B., Kateb, F., Marish Ali, A., & Shah, B. (2022). Detecting High-Risk Factors and Early Diagnosis of Diabetes Using Machine Learning Methods. *Computational Intelligence and Neuroscience*, 2022, Article ID 2557795.
  
 [2] Afandi, M., Riskianto, D. D., Ramadhan, M. R., & Sudriyanto. (2026). Analisis Prediksi Diabetes Berbasis Artificial Neural Network Menggunakan Data CDC Diabetes Health Indicators. *Jurnal Riset Sistem dan Tecnología Informasi (RESTIA)*, 4(1), 22–29.
