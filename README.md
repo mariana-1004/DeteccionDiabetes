@@ -352,7 +352,7 @@ Del total de personas que sí tenían diabetes, el modelo las identificó correc
 </p>
 
  
-Del total de personas que sí tenían diabetes, el modelo las identificó correctamente el 78% de las veces. Del total de personas que **no tenían diabetes, las clasificó correctamente el 71% de las veces. Comparado con el modelo base, mejoró su capacidad para descartar correctamente a personas sanas, a cambio de una reducción en la detección de diabéticos. 
+Del total de personas que sí tenían diabetes, el modelo las identificó correctamente el 78% de las veces. Del total de personas que no tenían diabetes, las clasificó correctamente el 71% de las veces. Comparado con el modelo base, mejoró su capacidad para descartar correctamente a personas sanas, a cambio de una reducción en la detección de diabéticos. 
 
 3. **Predicciones Individuales.**
  
