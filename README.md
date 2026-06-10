@@ -113,7 +113,10 @@ plt.show()
 
 Una vez verificado el balance, los datos fueron preprocesados:
 
-1. **Separación de features y target.** Se separaron las 21 columnas con valores para predecir (X) de la columna objetivo `Diabetes_binary` (y).
+El preprocesamiento se realizó en dos etapas correspondientes al modelo base y al modelo refinado. Ambos comparten los mismos pasos iniciales, pero cambian en la técnica de normalización aplicada.
+
+1. **Separación de features y target.** En ambas versiones se separaron las 21 columnas de indicadores de salud (X) de la columna objetivo `Diabetes_binary` (y), que indica si una 
+persona tiene diabetes (1) o no (0).
 ```python
 X = df_diabetes[['HighBP', 'HighChol', 'CholCheck', 'BMI', 'Smoker', 'Stroke',
              'HeartDiseaseorAttack', 'PhysActivity', 'Fruits', 'Veggies',
@@ -122,37 +125,195 @@ X = df_diabetes[['HighBP', 'HighChol', 'CholCheck', 'BMI', 'Smoker', 'Stroke',
 y_raw = df_diabetes['Diabetes_binary']
 ```
 
-2. **División train/test.** Se eligió una división de 80% para Train y 20% para Test (Considerando en un futuro implementar un 10% para validación) por ser una de las proporciones más usadas en machine learning.
+2. **División train/test.** El modelo experimental usó una división 80/20, que es una de las proporciones más comunes en machine learning. Para el modelo refinado se ajustó a 
+70/30, alineándose con la división que Ullah, Saleem, Jamjoom et al.(*Detecting High-Risk Factors and Early Diagnosis of Diabetes Using Machine Learning Methods*, 2022) aplicaron sobre el mismo dataset, donde el 70% se destinó al entrenamiento y el 30% restante a la prueba. Adicionalmente, se reservó un 15% del conjunto de entrenamiento para 
+validación durante el proceso de ajuste.
+
+
+
+| | Modelo Experimental | Modelo Refinado |
+|---|---|---|
+| **Train** | 80% | 70% |
+| **Test** | 20% | 30% |
+| **Validación** | 10% del train | 15% del train |
+
+
 ```python
-X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42, stratify=y_encoded)
+# Modelo base
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y_encoded, test_size=0.2, random_state=42, stratify=y_encoded)
+
+# Modelo refinado
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y_encoded, test_size=0.3, random_state=42, stratify=y_encoded)
 ```
+
+
+
+2. **Normalización.** El modelo experimental normaliza los datos con `StandardScaler`. En el modelo refinado se adoptó `RobustScaler`, siguiendo
+directamente lo descrito por Afandi, Riskianto, Ramadhan et al. (*ANN-Based Diabetes Prediction*, 2026), quienes justifican este cambio porque los datos de salud
+frecuentemente contienen valores atípicos, como registros extremos de BMI o días de mala salud y `RobustScaler` maneja mejor esas variaciones al no verse afectado por 
+valores muy alejados del promedio.
+
+
+| | Modelo Experimental | Modelo Refinado |
+|---|---|---|
+| **Scaler** | `StandardScaler` | `RobustScaler` |
+| **Cómo funciona** | Centra los datos en media 0 | Usa la mediana y el rango intercuartílico |
+
+
+
+```python
+# Modelo base
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled  = scaler.transform(X_test)
+
+# Modelo refinado
+scaler = RobustScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled  = scaler.transform(X_test)
+```
+
+
 
 ## Modelo
 
-Se construyó una red neuronal con la API de Keras, compuesta por una capa de entrada para las 21 features, una capa oculta de 256 neuronas con función de activación Relu y una capa de salida con una función de activación sigmoid, debido a que nuestro reto se centra en clasificación. Para la evaluación del modelo se emplearon tres métricas (Accuracy, Precision y Recall) fueron seleccionadas debido a que se calculan en el artículo de referencia, esto con el fin de contar con un punto de comparación para los resultados obtenidos.
+2. **Arquitectura de la red neuronal.**
+
+| | Modelo experimental | Modelo Refinado |
+|---|---|---|
+| **Capas ocultas** | 1 (256 neuronas) | 3 (256 → 128 → 64 neuronas) |
+| **Activación** | ReLU + Sigmoid | ReLU + Sigmoid |
+| **Batch Normalization** | No | Sí (capas 1 y 2) |
+| **Dropout** | No | 0.3, 0.3, 0.2 |
+
+El modelo experimental fue una red con una sola capa oculta de 256 neuronas con activación ReLU, seguida directamente de la capa de salida con activación sigmoid. 
+Se eligió sigmoid en la salida porque el problema es de clasificación binaria. Esta arquitectura sirvió como punto de partida para entender el comportamiento 
+del modelo con el dataset.
 
 ```python
-from tensorflow.keras import optimizers
-from tensorflow.keras import models
-from tensorflow.keras import layers
-
+# Modelo base
 model = models.Sequential()
-#Entrance X
 model.add(layers.Input(shape=(21,)))
-model.add(layers.Dense(256,activation='relu'))
-#model.add(layers.Dense(128,activation='relu'))
-
-#Sigmoid as activation function for classification
-model.add(layers.Dense(1,activation='sigmoid'))
-
-model.summary()
-
-model.compile(loss='binary_crossentropy',
-						optimizer=optimizers.Adam(learning_rate=2e-5),
-						metrics=['acc','precision','recall'])
+model.add(layers.Dense(256, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
 ```
 
+Para el modelo refinado se amplió la arquitectura a tres capas ocultas de 256, 128 y 64 neuronas. Este diseño de capas sigue la estructura propuesta por Afandi, Riskianto, 
+Ramadhan et al. (*ANN-Based Diabetes Prediction*, 2026), donde capas sucesivas de menor tamaño permiten al modelo extraer patrones cada vez más específicos a medida que la información avanza por la red.
+
+Se agregó Batch Normalization después de las dos primeras capas. Esta técnica normaliza los valores internos entre capa y capa durante el entrenamiento, lo que evita que los valores se disparen o se vuelvan muy pequeños, haciendo que el modelo aprenda de forma más estable y rápida.
+
+Se incorporó también Dropout con valores de 0.3 en las primeras dos capas y 0.2 en la tercera, tomando como referencia los valores usados por Afandi et al. (*op. cit.*). El Dropout desactiva aleatoriamente un porcentaje de neuronas en cada paso del entrenamiento, lo que obliga al modelo a no depender de conexiones específicas y reduce el riesgo de que memorice los datos de entrenamiento en lugar de aprender patrones generales.
+
+```python
+# Modelo refinado
+model = models.Sequential()
+model.add(layers.Input(shape=(21,)))
+
+model.add(layers.Dense(256, activation='relu'))
+model.add(layers.BatchNormalization())
+model.add(layers.Dropout(0.3))
+
+model.add(layers.Dense(128, activation='relu'))
+model.add(layers.BatchNormalization())
+model.add(layers.Dropout(0.3))
+
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dropout(0.2))
+
+model.add(layers.Dense(1, activation='sigmoid'))
+```
+
+#### Compilación
+
+| | Modelo Base | Modelo Refinado |
+|---|---|---|
+| **Optimizador** | Adam (lr = 2e-5) | Adam (lr = 1e-3) |
+| **Loss** | Binary Crossentropy | Binary Crossentropy |
+| **Métricas** | Accuracy, Precision, Recall | Accuracy, Precision, Recall |
+
+En ambos modelos se usó `binary_crossentropy` como función de pérdida 
+por ser la estándar para problemas de clasificación binaria, y las 
+mismas tres métricas que reportan los dos artículos de referencia, 
+lo que permite una comparación directa con sus resultados.
+
+La diferencia principal está en el learning rate del optimizador Adam. 
+El modelo base usó un valor de `2e-5`, extremadamente conservador, 
+lo que provocaba que el modelo avanzara muy poco en cada paso y 
+llegara rápido a un techo sin poder mejorar. En el modelo refinado 
+se subió a `1e-3`, que es el valor predeterminado y más ampliamente 
+recomendado para Adam. Afandi et al. (*op. cit.*) usaron una tasa 
+de aprendizaje entre `1e-4` y `1e-3`, lo que confirma que este 
+rango es adecuado para este tipo de problema.
+
+```python
+# Modelo base
+model.compile(
+    loss='binary_crossentropy',
+    optimizer=optimizers.Adam(learning_rate=2e-5),
+    metrics=['acc', 'precision', 'recall']
+)
+
+# Modelo refinado
+model.compile(
+    loss='binary_crossentropy',
+    optimizer=optimizers.Adam(learning_rate=1e-3),
+    metrics=['acc', 'precision', 'recall']
+)
+```
+
+
+
+
+
+
+
+1. **Épocas, Batch Size y Validación.**
+
+
+| | Modelo Base | Modelo Refinado |
+|---|---|---|
+| **Épocas** | 10 | 50 |
+| **Batch Size** | 32 | 64 |
+| **Validation Split** | 10% | 15% |
+| **Callbacks** | ModelCheckpoint | ModelCheckpoint |
+
+El modelo experimental se entrenó durante 10 épocas. Como se puede observar en las gráficas, las curvas de accuracy y loss se 
+mantuvieron muy cercanas entre sí desde la primera época y prácticamente no cambiaron a lo largo del entrenamiento. Esto indica 
+que las 10 épocas fueron suficientes para estabilizarse, pero no para mejorar.
 ![Arquitectura del modelo](imagenes/result_redneuronal.png)
+
+Para el modelo refinado se aumentó a 50 épocas siguiendo el máximo 
+establecido por Afandi, Riskianto, Ramadhan et al. (*ANN-Based 
+Diabetes Prediction*, 2026), quienes entrenaron con ese mismo límite 
+aplicando early stopping para detener el proceso cuando el modelo 
+dejara de mejorar. El batch size se ajustó de 32 a 64, lo que 
+procesa más ejemplos por paso y genera estimaciones más estables 
+durante el entrenamiento. El porcentaje de validación se subió de 
+10% a 15% para tener una evaluación más representativa del 
+comportamiento del modelo en cada época.
+
+```python
+# Modelo base
+history = model.fit(X_train_scaled, y_train,
+            epochs=10,
+            validation_split=0.10,
+            batch_size=32,
+            callbacks=[checkpoint])
+
+# Modelo refinado
+history = model.fit(X_train_scaled, y_train,
+            epochs=50,
+            validation_split=0.15,
+            batch_size=64,
+            callbacks=[checkpoint])
+```
+
+
+
+
 
 
 ### Resultados
