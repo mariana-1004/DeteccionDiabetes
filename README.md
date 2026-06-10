@@ -1,6 +1,47 @@
 # Predicción de Diabetes (Clasificación)
  
 ---
+## 📋 Abstract
+This project applies deep learning to predict whether a person
+has diabetes based on 21 everyday health indicators, such as
+blood pressure, body mass index, physical activity and lifestyle
+habits. The CDC Diabetes Health Indicators BRFSS 2015 dataset
+was used, containing 70,692 records evenly split between people
+with and without diabetes. Using two research papers as
+reference, the original model was refined by adding extra
+learning layers, data normalization with RobustScaler, and
+mechanisms to prevent the model from simply memorizing the
+training data, such as Batch Normalization and Dropout. The
+model was trained over 50 epochs and showed stable behavior
+between training and validation data. The results suggest that
+it is possible to build a support tool to identify diabetes risk
+using only information that anyone can provide, with no need
+for clinical tests.
+
+---
+
+## 📃 Introducción
+
+La diabetes es una enfermedad que cada vez afecta a más personas 
+alrededor del mundo, y detectarla a tiempo puede marcar una gran 
+diferencia en la calidad de vida de quien la padece. Sin embargo, 
+muchas veces el diagnóstico llega tarde porque no siempre se tiene 
+acceso fácil a pruebas médicas especializadas.
+
+Este proyecto surge como una exploración de si es posible predecir 
+el riesgo de diabetes usando únicamente información general de salud, 
+es decir, datos que cualquier persona conoce sobre sí misma sin 
+necesidad de ir a un laboratorio. Para esto se entrenó un modelo 
+de deep learning con datos reales recopilados por los Centros para 
+el Control y la Prevención de Enfermedades de Estados Unidos (CDC).
+
+El modelo fue construido tomando como referencia dos artículos que 
+trabajaron con el mismo conjunto de datos, lo que permitió comparar 
+resultados y tomar decisiones más fundamentadas sobre el diseño y entrenamiento 
+de la red.
+
+---
+
 ## 📊 Dataset
 
 **CDC Diabetes Health Indicators — BRFSS 2015**
