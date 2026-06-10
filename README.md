@@ -283,7 +283,7 @@ model.compile(
 El modelo experimental se entrenó durante 10 épocas. Como se puede observar en las gráficas, las curvas de accuracy y loss se 
 mantuvieron muy cercanas entre sí desde la primera época y prácticamente no cambiaron a lo largo del entrenamiento. Esto indica 
 que las 10 épocas fueron suficientes para estabilizarse, pero no para mejorar.
-![Arquitectura del modelo](imagenes/result_redneuronal.png)
+![Arquitectura del modelo](imagenes/result_redneuronal_base.png)
 
 Para el modelo refinado se aumentó a 50 épocas siguiendo el máximo 
 establecido por Afandi, Riskianto, Ramadhan et al. (*ANN-Based 
